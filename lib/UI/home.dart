@@ -35,6 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               margin: EdgeInsets.all(20),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
@@ -56,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               .createShader(Rect.fromLTWH(0, 100, 100, 60))),
                   ),
                   SizedBox(
-                    height: 300,
+                    height: 100,
                   ),
                   Column(
                     children: [
@@ -103,6 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         return GestureDetector(
                             onTap: () {
                               context.read<FileBloc>().add(LoadModel());
+                              context.read<FileBloc>().add(Compare());
                             },
                             child: RoundButton());
                       })

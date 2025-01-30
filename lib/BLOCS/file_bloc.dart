@@ -1,8 +1,10 @@
+import 'dart:io';
+import 'dart:developer';
 import 'package:assignment_checker/repository/filepickerUtils.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:tflite_flutter/tflite_flutter.dart';
 part 'file_event.dart';
 part 'file_state.dart';
 
@@ -12,7 +14,8 @@ class FileBloc extends Bloc<FileEvent, FileState> {
     on<Camera>(_Camerapick);
     on<StudentGallery>(_studentGallery);
     on<TeacherGallery>(_teacherGallery);
-    on<LoadModel>(loadModel);
+    on<LoadModel>(_loadModel);
+    on<Compare>(_compare);
   }
 
   void _studentGallery(FileEvent event, Emitter<FileState> emit) async {
@@ -30,35 +33,71 @@ class FileBloc extends Bloc<FileEvent, FileState> {
     emit(state.copyWith(student: file));
   }
 
-  void loadModel(LoadModel event, Emitter<FileState> emit) async {
-    try {
-      // Check if studentfile is null
-      if (state.studentfile == null) {
-        throw Exception('No image file selected');
-      }
-
-      // Load the model
-      final interpreter =
-          await Interpreter.fromAsset('assets/Models/model.tflite').then(
-              (interpreter) =>
-                  IsolateInterpreter.create(address: interpreter.address));
-
-      // Prepare inputs
-      var inputs =
-          await state.studentfile!.readAsBytes(); // Ensure inputs are ready
-
-      // Prepare an empty output tensor list
-      var outputs = List.filled(1, List<double>.filled(1000, 0.0));
-
-      // Run the model
-      await interpreter.run([inputs], outputs);
-
-      // Handle outputs
-      print(outputs); // Handle your output as needed
-    } catch (e, stackTrace) {
-      // Log the error
-      print('Error loading or running model: $e');
-      print('Stack trace: $stackTrace');
+  void _loadModel(LoadModel event, Emitter<FileState> emit) async {
+    if (state.studentfile == null) {
+      log("No student file selected");
+      return;
     }
+
+    final gemini = Gemini.instance;
+    final file = File(state.studentfile!.path);
+
+    try {
+      final imageBytes = await file.readAsBytes(); // Asynchronous file reading
+      gemini.textAndImage(
+        text: "Extract text from the image.",
+        images: [imageBytes],
+      ).then((value) {
+        log(value?.content?.parts?.first.toString() ?? '');
+        emit(state.copyWith(
+            studentdata:
+                value?.content?.parts?.last.toString() ?? "empty picture"));
+      }).catchError((e) {
+        log('textAndImageInput', error: e);
+      });
+    } catch (e) {
+      log('Error reading file', error: e);
+    }
+    if (state.studentfile == null) {
+      log("No student file selected");
+      return;
+    }
+
+    final file1 = File(state.teacherfile!.path);
+
+    try {
+      final imageBytes1 =
+          await file1.readAsBytes(); // Asynchronous file reading
+      gemini.textAndImage(
+        text: "Extract text from the image.",
+        images: [imageBytes1],
+      ).then((value) {
+        log(value?.content?.parts?.first.toString() ?? '');
+        emit(state.copyWith(
+            teacherdata:
+                value?.content?.parts?.last.toString() ?? "empty picture"));
+      }).catchError((e) {
+        log('textAndImageInput', error: e);
+      });
+    } catch (e) {
+      log('Error reading file', error: e);
+    }
+  }
+
+  Future<void> _compare(Compare event, Emitter<FileState> emit) async {
+    final gemini = Gemini.instance;
+
+    gemini
+        .text(
+            "Compare these two texts and give a percenatage how much they are alike.\n Text 1: ${state.student} , Text 2: ${state.teacher}")
+        .then((value) {
+      emit(state.copyWith(message: value!.output.toString()));
+      print(state.message);
+      print(state.student.toString());
+      print(state.teacher.toString());
+    })
+
+        /// or value?.content?.parts?.last.text
+        .catchError((e) => print(e.toString()));
   }
 }

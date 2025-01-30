@@ -1,10 +1,13 @@
 import 'package:assignment_checker/routing/route_names.dart';
 import 'package:assignment_checker/routing/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp());
+const apiKey = 'AIzaSyC-rggnag3-7UKpoQztqSlxc9-MCQDnJwk';
+
+void main() {
+  Gemini.init(apiKey: apiKey);
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
