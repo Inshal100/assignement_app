@@ -16,3 +16,5 @@ class TeacherGallery extends FileEvent {}
 class LoadModel extends FileEvent {}
 
 class Compare extends FileEvent {}
+
+class ResetState extends FileEvent {}

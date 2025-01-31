@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               .createShader(Rect.fromLTWH(0, 100, 100, 60))),
                   ),
                   SizedBox(
-                    height: 100,
+                    height: 300,
                   ),
                   Column(
                     children: [
@@ -72,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         .read<FileBloc>()
                                         .add(StudentGallery());
                                   },
-                                  data: 'Asssigment',
+                                  data: 'Student',
                                   path:
                                       'https://cdn-icons-png.flaticon.com/512/10771/10771418.png',
                                 );
@@ -89,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         .read<FileBloc>()
                                         .add(TeacherGallery());
                                   },
-                                  data: 'Colors',
+                                  data: 'Teacher',
                                   path:
                                       'https://cdn-icons-png.flaticon.com/512/10771/10771418.png',
                                 );
@@ -100,13 +100,59 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: 30,
                       ),
                       BlocBuilder<FileBloc, FileState>(
-                          builder: (context, state) {
-                        return GestureDetector(
-                            onTap: () {
-                              context.read<FileBloc>().add(LoadModel());
-                              context.read<FileBloc>().add(Compare());
-                            },
-                            child: RoundButton());
+                          buildWhen: (previous, current) {
+                        return previous.isStudentProcessed !=
+                                current.isStudentProcessed ||
+                            previous.isTeacherProcessed !=
+                                current.isTeacherProcessed ||
+                            previous.message != current.message;
+                      }, builder: (context, state) {
+                        return Column(
+                          children: [
+                            // Show processing status
+                            if (state.studentfile != null)
+                              Text(
+                                state.isStudentProcessed
+                                    ? "Student image processed "
+                                    : "Processing student image...",
+                                style: GoogleFonts.abhayaLibre(
+                                    color: Colors.white),
+                              ),
+                            if (state.teacherfile != null)
+                              Text(
+                                  state.isTeacherProcessed
+                                      ? "Teacher image processed "
+                                      : "Processing teacher image...",
+                                  style: GoogleFonts.abhayaLibre(
+                                      color: Colors.white)),
+
+                            Container(
+                              child: state.message != null
+                                  ? GestureDetector(
+                                      onTap: () {
+                                        context
+                                            .read<FileBloc>()
+                                            .add(ResetState());
+                                      },
+                                      child: RoundButton(
+                                        text: state.message.toString(),
+                                      ))
+                                  : GestureDetector(
+                                      onTap: () {
+                                        if (state.isStudentProcessed &&
+                                            state.isTeacherProcessed) {
+                                          context
+                                              .read<FileBloc>()
+                                              .add(Compare());
+                                        }
+                                      },
+                                      child: RoundButton(
+                                        text: 'Compare',
+                                      ),
+                                    ),
+                            )
+                          ],
+                        );
                       })
                     ],
                   )

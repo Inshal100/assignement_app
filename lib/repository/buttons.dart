@@ -43,7 +43,8 @@ class Buttons extends StatelessWidget {
 }
 
 class RoundButton extends StatelessWidget {
-  const RoundButton({super.key});
+  String? text;
+  RoundButton({super.key, this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +74,7 @@ class RoundButton extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter))),
         child: Center(
-            child: Text('Compare',
+            child: Text(text.toString(),
                 style: GoogleFonts.abhayaLibre(
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
