@@ -42,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 100,
                   ),
                   Text(
-                    'Hi Player \nGood Morning',
+                    'Hi User \nGood Morning',
                     style: GoogleFonts.inter(
                         fontSize: 40,
                         fontWeight: FontWeight.bold,
@@ -73,8 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         .add(StudentGallery());
                                   },
                                   data: 'Student',
-                                  path:
-                                      'https://cdn-icons-png.flaticon.com/512/10771/10771418.png',
+                                  path: 'assets/images/icons2.png',
                                 );
                               }),
                           SizedBox(
@@ -90,8 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         .add(TeacherGallery());
                                   },
                                   data: 'Teacher',
-                                  path:
-                                      'https://cdn-icons-png.flaticon.com/512/10771/10771418.png',
+                                  path: 'assets/images/icons2.png',
                                 );
                               })
                         ],
@@ -125,7 +123,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                       : "Processing teacher image...",
                                   style: GoogleFonts.abhayaLibre(
                                       color: Colors.white)),
-
+                            SizedBox(
+                              height: 20,
+                            ),
                             Container(
                               child: state.message != null
                                   ? GestureDetector(

@@ -26,7 +26,8 @@ class Buttons extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CircleAvatar(
-                child: ClipOval(child: Image.network(path.toString()))),
+                minRadius: 2,
+                child: ClipOval(child: Image.asset(path.toString()))),
             SizedBox(
               height: 15,
             ),
@@ -43,8 +44,8 @@ class Buttons extends StatelessWidget {
 }
 
 class RoundButton extends StatelessWidget {
-  String? text;
-  RoundButton({super.key, this.text});
+  final String text;
+  const RoundButton({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {

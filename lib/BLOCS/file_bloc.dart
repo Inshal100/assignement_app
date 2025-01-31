@@ -81,7 +81,6 @@ class FileBloc extends Bloc<FileEvent, FileState> {
     if (state.studentfile != null && !state.isStudentProcessed) {
       try {
         final studentFile = File(state.studentfile!.path);
-        final studentImageBytes = await studentFile.readAsBytes();
         final inputImage = InputImage.fromFilePath(studentFile.path);
         final recognizedText = await textRecognizer.processImage(inputImage);
 
@@ -95,12 +94,10 @@ class FileBloc extends Bloc<FileEvent, FileState> {
         log('Error processing student file', error: e);
       }
     }
-
     // Process teacher file if available and not processed
     if (state.teacherfile != null && !state.isTeacherProcessed) {
       try {
         final teacherFile = File(state.teacherfile!.path);
-        final teacherImageBytes = await teacherFile.readAsBytes();
         final inputImage = InputImage.fromFilePath(teacherFile.path);
         final recognizedText = await textRecognizer.processImage(inputImage);
 
@@ -150,10 +147,6 @@ class FileBloc extends Bloc<FileEvent, FileState> {
           message: result?.output.toString() ?? "Error comparing texts",
         ));
       }
-
-      log("Student text: ${state.student}");
-      log("Teacher text: ${state.teacher}");
-      log("Comparison result: ${state.message}");
     } catch (e) {
       log('Error during comparison', error: e);
       if (!emit.isDone) {
