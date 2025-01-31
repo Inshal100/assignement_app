@@ -137,7 +137,7 @@ class FileBloc extends Bloc<FileEvent, FileState> {
     final gemini = Gemini.instance;
     try {
       final result = await gemini.text(
-          "Compare these two texts and provide only the similarity percentage in the following exact format: 'Similarity: X%'. "
+          "Compare these two texts on basis of their meaning and provide only the similarity percentage in the following exact format: 'Similarity: X%'. "
           "Do not include any additional explanations, descriptions, or text. "
           "Text 1: ${state.student}\n"
           "Text 2: ${state.teacher}");

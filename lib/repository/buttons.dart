@@ -26,10 +26,10 @@ class Buttons extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CircleAvatar(
-                minRadius: 2,
+                radius: 30,
                 child: ClipOval(child: Image.asset(path.toString()))),
             SizedBox(
-              height: 15,
+              height: 10,
             ),
             Text(data.toString(),
                 style: GoogleFonts.inter(

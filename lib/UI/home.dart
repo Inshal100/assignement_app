@@ -57,8 +57,31 @@ class _HomeScreenState extends State<HomeScreen> {
                               .createShader(Rect.fromLTWH(0, 100, 100, 60))),
                   ),
                   SizedBox(
-                    height: 300,
+                    height: 280, //280
                   ),
+                  // Row(
+                  //   children: [
+                  //     BlocBuilder<FileBloc, FileState>(
+                  //   builder: (context, state) {
+                  //     return Container(
+                  //       height: 100,
+                  //       width: 100,
+                  //       child: Text(state.student.toString() ?? "Empty"),
+                  //     );
+                  //   },
+                  // ),
+                  // BlocBuilder<FileBloc, FileState>(
+                  //   builder: (context, state) {
+                  //     return Container(
+                  //       height: 100,
+                  //       width: 100,
+                  //       child: Text(state.teacher.toString() ?? "Empty"),
+                  //     );
+                  //   },
+                  // ),
+                  //   ],
+                  // )
+                  // ,
                   Column(
                     children: [
                       Row(
