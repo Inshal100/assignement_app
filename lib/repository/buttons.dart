@@ -1,6 +1,8 @@
+import 'package:assignment_checker/repository/Loading.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class Buttons extends StatelessWidget {
   final String data;
@@ -45,7 +47,8 @@ class Buttons extends StatelessWidget {
 
 class RoundButton extends StatelessWidget {
   final String text;
-  const RoundButton({super.key, required this.text});
+  final SimilarityState s_state;
+  const RoundButton({super.key, required this.text, required this.s_state});
 
   @override
   Widget build(BuildContext context) {
@@ -75,10 +78,15 @@ class RoundButton extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter))),
         child: Center(
-            child: Text(text.toString(),
-                style: GoogleFonts.abhayaLibre(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white))));
+            child: s_state == SimilarityState.loading
+                ? LoadingAnimationWidget.staggeredDotsWave(
+                    color: Colors.purpleAccent,
+                    size: 100,
+                  )
+                : Text(text.toString(),
+                    style: GoogleFonts.abhayaLibre(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white))));
   }
 }

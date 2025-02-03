@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:developer';
+import 'package:assignment_checker/repository/Loading.dart';
 import 'package:assignment_checker/repository/filepickerUtils.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -28,14 +29,14 @@ class FileBloc extends Bloc<FileEvent, FileState> {
   Future<void> _onResetState(ResetState event, Emitter<FileState> emit) async {
     // Reset the state to its initial values
     emit(FileState(
-      studentfile: null,
-      teacherfile: null,
-      student: null,
-      teacher: null,
-      message: null,
-      isStudentProcessed: false,
-      isTeacherProcessed: false,
-    ));
+        studentfile: null,
+        teacherfile: null,
+        student: null,
+        teacher: null,
+        message: null,
+        isStudentProcessed: false,
+        isTeacherProcessed: false,
+        s_state: SimilarityState.failure));
   }
 
   Future<void> _onStudentGallery(
@@ -136,6 +137,7 @@ class FileBloc extends Bloc<FileEvent, FileState> {
 
     final gemini = Gemini.instance;
     try {
+      emit(state.copyWith(s_state: SimilarityState.loading));
       final result = await gemini.text(
           "Compare these two texts on basis of their meaning and provide only the similarity percentage in the following exact format: 'Similarity: X%'. "
           "Do not include any additional explanations, descriptions, or text. "
@@ -144,15 +146,15 @@ class FileBloc extends Bloc<FileEvent, FileState> {
 
       if (!emit.isDone) {
         emit(state.copyWith(
-          message: result?.output.toString() ?? "Error comparing texts",
-        ));
+            message: result?.output.toString() ?? "Error comparing texts",
+            s_state: SimilarityState.success));
       }
     } catch (e) {
       log('Error during comparison', error: e);
       if (!emit.isDone) {
         emit(state.copyWith(
-          message: "Error comparing texts: ${e.toString()}",
-        ));
+            message: "Error comparing texts: ${e.toString()}",
+            s_state: SimilarityState.failure));
       }
     }
   }

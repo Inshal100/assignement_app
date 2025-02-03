@@ -86,35 +86,78 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Row(
                         children: [
-                          BlocBuilder<FileBloc, FileState>(
-                              buildWhen: (previous, current) => false,
-                              builder: (context, state) {
-                                return Buttons(
-                                  ontap: () {
-                                    context
-                                        .read<FileBloc>()
-                                        .add(StudentGallery());
-                                  },
-                                  data: 'Student',
-                                  path: 'assets/images/icons2.png',
-                                );
-                              }),
+                          Column(
+                            children: [
+                              BlocBuilder<FileBloc, FileState>(
+                                  buildWhen: (previous, current) => false,
+                                  builder: (context, state) {
+                                    print("Building button student");
+                                    return Buttons(
+                                      ontap: () {
+                                        context
+                                            .read<FileBloc>()
+                                            .add(StudentGallery());
+                                      },
+                                      data: 'Student',
+                                      path: 'assets/images/icons2.png',
+                                    );
+                                  }),
+                              BlocBuilder<FileBloc, FileState>(
+                                buildWhen: (previous, current) {
+                                  return previous.isStudentProcessed !=
+                                      current.isStudentProcessed;
+                                },
+                                builder: (context, state) {
+                                  return (state.studentfile != null)
+                                      ? Text(
+                                          state.isStudentProcessed
+                                              ? "Student image processed "
+                                              : "Processing student image...",
+                                          style: GoogleFonts.abhayaLibre(
+                                              color: Colors.white),
+                                        )
+                                      : Container();
+                                },
+                              ),
+                            ],
+                          ),
                           SizedBox(
                             width: 30,
                           ),
-                          BlocBuilder<FileBloc, FileState>(
-                              buildWhen: (previous, current) => false,
-                              builder: (context, state) {
-                                return Buttons(
-                                  ontap: () {
-                                    context
-                                        .read<FileBloc>()
-                                        .add(TeacherGallery());
-                                  },
-                                  data: 'Teacher',
-                                  path: 'assets/images/icons2.png',
-                                );
-                              })
+                          Column(
+                            children: [
+                              BlocBuilder<FileBloc, FileState>(
+                                  buildWhen: (previous, current) => false,
+                                  builder: (context, state) {
+                                    print("Building button student");
+                                    return Buttons(
+                                      ontap: () {
+                                        context
+                                            .read<FileBloc>()
+                                            .add(TeacherGallery());
+                                      },
+                                      data: 'Teacher',
+                                      path: 'assets/images/icons2.png',
+                                    );
+                                  }),
+                              BlocBuilder<FileBloc, FileState>(
+                                buildWhen: (previous, current) {
+                                  return previous.isTeacherProcessed !=
+                                      current.isTeacherProcessed;
+                                },
+                                builder: (context, state) {
+                                  return (state.teacherfile != null)
+                                      ? Text(
+                                          state.isTeacherProcessed
+                                              ? "Teacher image processed "
+                                              : "Processing teacher image...",
+                                          style: GoogleFonts.abhayaLibre(
+                                              color: Colors.white))
+                                      : Container();
+                                },
+                              ),
+                            ],
+                          )
                         ],
                       ),
                       SizedBox(
@@ -122,59 +165,32 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       BlocBuilder<FileBloc, FileState>(
                           buildWhen: (previous, current) {
-                        return previous.isStudentProcessed !=
-                                current.isStudentProcessed ||
-                            previous.isTeacherProcessed !=
-                                current.isTeacherProcessed ||
-                            previous.message != current.message;
+                        return previous.message != current.message;
                       }, builder: (context, state) {
-                        return Column(
-                          children: [
-                            // Show processing status
-                            if (state.studentfile != null)
-                              Text(
-                                state.isStudentProcessed
-                                    ? "Student image processed "
-                                    : "Processing student image...",
-                                style: GoogleFonts.abhayaLibre(
-                                    color: Colors.white),
-                              ),
-                            if (state.teacherfile != null)
-                              Text(
-                                  state.isTeacherProcessed
-                                      ? "Teacher image processed "
-                                      : "Processing teacher image...",
-                                  style: GoogleFonts.abhayaLibre(
-                                      color: Colors.white)),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Container(
-                              child: state.message != null
-                                  ? GestureDetector(
-                                      onTap: () {
-                                        context
-                                            .read<FileBloc>()
-                                            .add(ResetState());
-                                      },
-                                      child: RoundButton(
-                                        text: state.message.toString(),
-                                      ))
-                                  : GestureDetector(
-                                      onTap: () {
-                                        if (state.isStudentProcessed &&
-                                            state.isTeacherProcessed) {
-                                          context
-                                              .read<FileBloc>()
-                                              .add(Compare());
-                                        }
-                                      },
-                                      child: RoundButton(
-                                        text: 'Compare',
-                                      ),
-                                    ),
-                            )
-                          ],
+                        print("Building Column up to the button");
+                        return Container(
+                          child: GestureDetector(
+                              onTap: () {
+                                if (state.message != null) {
+                                  context.read<FileBloc>().add(ResetState());
+                                } else {
+                                  context.read<FileBloc>().add(Compare());
+                                }
+                              },
+                              child: BlocBuilder<FileBloc, FileState>(
+                                buildWhen: (previous, current) {
+                                  return previous.s_state != current.s_state;
+                                },
+                                builder: (context, state) {
+                                  print("Building text in the button");
+                                  return RoundButton(
+                                    s_state: state.s_state,
+                                    text: state.message != null
+                                        ? state.message.toString()
+                                        : 'Compare',
+                                  );
+                                },
+                              )),
                         );
                       })
                     ],
