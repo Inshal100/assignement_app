@@ -9,4 +9,8 @@ class Extensions {
         r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$');
     return regex.hasMatch(text!) ? null : "Invalid Password";
   }
+
+  String? isUser(String? text) {
+    return text == null ? null : "Invalid Username";
+  }
 }
