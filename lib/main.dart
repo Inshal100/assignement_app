@@ -5,7 +5,7 @@ import 'package:flutter_gemini/flutter_gemini.dart';
 
 const apiKey = 'AIzaSyC-rggnag3-7UKpoQztqSlxc9-MCQDnJwk';
 
-void main() {
+void main() async {
   Gemini.init(apiKey: apiKey);
   runApp(const MyApp());
 }
